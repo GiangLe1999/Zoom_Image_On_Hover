@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Main image -->
+      <div class="img-container">
+        <img src="/img-1.webp" alt="watch" />
+        <span>Hover me</span>
+      </div>
+
+      <!-- Image list -->
+      <ul class="list-images">
+        <li class="active">
+          <img src="/img-1.webp" alt="watch2" />
+        </li>
+        <li>
+          <img src="/img-3.webp" alt="watch3" />
+        </li>
+        <li>
+          <img src="/img-4.webp" alt="watch4" />
+        </li>
+        <li>
+          <img src="/img-5.webp" alt="watch5" />
+        </li>
+      </ul>
+    </div>
+
+    <!-- JavaScript code -->
+    <script>
+      const imgConElm = document.querySelector(".img-container");
+      const imgElm = document.querySelector(".img-container img");
+      const listImagesElm = document.querySelector(".list-images");
+
+      //   Percentage of the zoom
+      const ZOOM = "200%";
+
+      // Event Mouse enter
+      imgConElm.addEventListener("mouseenter", function () {
+        imgElm.style.width = ZOOM;
+      });
+
+      //   Event Mouse leaves
+      imgConElm.addEventListener("mouseleave", function () {
+        imgElm.style.width = "100%";
+        imgElm.style.top = "0";
+        imgElm.style.left = "0";
+      });
+
+      //   Event mouse move
+      //   Change position of the big image, depends on the position of the cursor in the container of image.
+      imgConElm.addEventListener("mousemove", function (mouseEvent) {
+        let obj = imgConElm;
+        let obj_left = obj.offsetLeft;
+        let obj_top = obj.offsetTop;
+        let xpos;
+        let ypos;
+
+        if (mouseEvent) {
+          // Firefox
+          xpos = mouseEvent.pageX;
+          ypos = mouseEvent.pageY;
+        } else {
+          // IE
+          xpos = window.event.x + document.body.scrollLeft - 2;
+          ypos = window.event.y + document.body.scrollTop - 2;
+        }
+
+        xpos = xpos - obj_left;
+        ypos = ypos - obj_top;
+
+        const imgWidth = imgElm.clientWidth;
+        const imgHeight = imgElm.clientHeight;
+
+        imgElm.style.top =
+          -(((imgHeight - this.clientHeight) * ypos) / this.clientHeight) +
+          "px";
+
+        // -(Kích thước sau khi Zoom - kích thước gốc)  * toạ độ cursor / kích thước gốc
+
+        imgElm.style.left =
+          -(((imgWidth - this.clientWidth) * xpos) / this.clientWidth) + "px";
+      });
+
+      //   Change the current image
+      const listLi = Array.from(listImagesElm.children);
+      listLi.forEach((element, i, list) => {
+        element.addEventListener("click", function () {
+          const newSrc = element.querySelector("img").src;
+          imgElm.src = newSrc;
+          listLi.forEach((elm) => elm.classList.remove("active"));
+          element.classList.add("active");
+        });
+      });
+
+      //   Change height of the image container
+      function changeHeight() {
+        imgConElm.style.height = imgConElm.clientWidth + "px";
+      }
+      changeHeight();
+    </script>
+  </body>
+</html>
